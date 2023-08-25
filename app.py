@@ -10,7 +10,7 @@ app = dash.Dash(__name__)
 
 # Define the layout of the app
 app.layout = html.Div(children=[
-    html.H1(children='EU Spot prices Dashboard'),
+    html.H1(children='API Data Dashboard'),
     html.Div(children='''
         Select start and end timestamps:
     '''),
@@ -50,7 +50,7 @@ def update_plot(n_clicks, start_timestamp, end_timestamp, api_token):
     response = requests.get('https://api.esios.ree.es/indicators/600', headers=headers, params=params)
     print(response.status_code)
     print(response.url)
-    # print(response.json()['indicator']['values'])
+    print(response.json()['indicator']['values'])
     if response.status_code != 200:
         raise ValueError(f'Request failed with status code {response.status_code}: {response.text}')
     data = response.json()['indicator']['values']
@@ -66,7 +66,6 @@ def update_plot(n_clicks, start_timestamp, end_timestamp, api_token):
             x=pd.to_datetime(filtered_df['datetime'], utc = True),
             y=filtered_df['value'],
             mode='lines',
-            line=dict(shape='hv', width=2),
             name=category
         )
         traces.append(trace)
@@ -79,4 +78,4 @@ def update_plot(n_clicks, start_timestamp, end_timestamp, api_token):
     return {'data': traces, 'layout': layout}
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False)
